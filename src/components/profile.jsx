@@ -17,23 +17,20 @@ const Profile = () => {
   };
 
   // Fetch logged-in user profile
+useEffect(() => {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/users/profile`,
-        axiosConfig
+        `${process.env.REACT_APP_API_URL}/api/users/profile`
       );
-      setProfile({ name: res.data.name, email: res.data.email, password: "" });
-      setLoading(false);
+      // set state
     } catch (err) {
-      console.error("Fetch Profile Error:", err);
-      setLoading(false);
+      console.log(err);
     }
   };
 
-  useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
+  fetchProfile();
+}, []);
 
   // Update profile
 const handleSave = async () => {

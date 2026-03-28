@@ -18,20 +18,20 @@ function UsersList() {
   };
 
   // FETCH USERS
+useEffect(() => {
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/all`, axiosConfig);
-       console.log("fetched:",res.data.data)
-     setUsers(Array.isArray(res.data.data) ? res.data.data : []);
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/users/all`
+      );
+      setUsers(res.data.data || []);
     } catch (err) {
-      console.error("Fetch Users Error:", err);
-       setUsers([]);
+      console.log(err);
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+  fetchUsers();
+}, []);
 
   // EDIT
   const handleEdit = (user) => {
