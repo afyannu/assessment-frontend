@@ -93,7 +93,28 @@ const handleSubmit = async () => {
 
   /* ================= DELETE ================= */
 
+/* ================= DELETE ================= */
 
+const handleDelete = async (productId) => {
+  try {
+    // Confirm before deleting
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+    if (!confirmDelete) return;
+
+    // Call backend delete API
+    await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/products/${productId}`
+    );
+
+    // Update products state without reloading the page
+    setProducts(products.filter((product) => product._id !== productId));
+    console.log("Product deleted successfully");
+  } catch (error) {
+    console.error("Delete Error:", error);
+  }
+};
 
   /* ================= EDIT ================= */
 
