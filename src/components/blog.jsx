@@ -83,7 +83,7 @@ function Blog() {
           <div key={blog._id} className="col-md-4 mb-4">
             <div className="card shadow blog-card">
               <img
-                src={`${process.env.REACT_APP_API_URL}/${blog.image}`}
+                src={`${process.env.REACT_APP_API_URL}/${blog.image}`} alt="blog"
                 className="card-img-top"
                 height="200"
               />

@@ -31,7 +31,7 @@ function UsersList() {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
 
   // EDIT
   const handleEdit = (user) => {

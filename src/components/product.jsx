@@ -30,7 +30,7 @@ function Products() {
   useEffect(() => {
     fetchProducts();
     fetchCategories();
-  }, [categoryId]);
+  }, [categoryId,fetchProducts,fetchCategories]);
   const fetchProducts = async () => {
     try {
       let url = `${process.env.REACT_APP_API_URL}/api/products`;

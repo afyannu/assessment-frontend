@@ -33,7 +33,7 @@ const Profile = () => {
 
   useEffect(() => {
     fetchProfile();
-  }, []);
+  }, [fetchProfile]);
 
   // Update profile
 const handleSave = async () => {
