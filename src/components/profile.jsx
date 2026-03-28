@@ -21,11 +21,21 @@ useEffect(() => {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/users/profile`
+        `${process.env.REACT_APP_API_URL}/api/users/profile`,
+        axiosConfig // ✅ ADD THIS
       );
-      // set state
+
+      setProfile({
+        name: res.data.name,
+        email: res.data.email,
+        password: "",
+      });
+
+      setLoading(false); // ✅ stop loading
+
     } catch (err) {
       console.log(err);
+      setLoading(false); // ✅ prevent infinite loading
     }
   };
 
@@ -35,22 +45,50 @@ useEffect(() => {
   // Update profile
 const handleSave = async () => {
   try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setMessage("User not authenticated");
+      return;
+    }
+
+    const payload = {
+      name: profile.name,
+      email: profile.email,
+    };
+
+    // only send password if entered
+    if (profile.password) {
+      payload.password = profile.password;
+    }
+
     const res = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/users/profile`,
+      payload,
       {
-        name: profile.name,
-        email: profile.email,
-        password: profile.password || undefined, // avoid sending empty string
-      },
-      axiosConfig
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
+    // ✅ update UI
     setMessage("Profile updated successfully!");
-    localStorage.setItem("user", JSON.stringify(res.data)); // update localStorage
-    setProfile({ ...profile, password: "" }); // clear password field
+
+    // ✅ update local storage (optional)
+    localStorage.setItem("user", JSON.stringify(res.data));
+
+    // ✅ clear password field
+    setProfile((prev) => ({ ...prev, password: "" }));
+
   } catch (err) {
     console.error("Update Profile Error:", err);
-    setMessage("Failed to update profile.");
+
+    if (err.response?.status === 401) {
+      setMessage("Session expired. Please login again.");
+    } else {
+      setMessage("Failed to update profile.");
+    }
   }
 };
   if (loading) return <div>Loading...</div>;
