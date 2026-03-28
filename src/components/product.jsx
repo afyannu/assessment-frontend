@@ -10,6 +10,11 @@ function Products() {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
+const axiosConfig = useMemo(() => ({
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+}), []);
   const [formData, setFormData] = useState({
     name: "",
     price: "",

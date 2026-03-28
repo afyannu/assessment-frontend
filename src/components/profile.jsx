@@ -1,6 +1,7 @@
 // Profile.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState,useEffect} from "react";
 import axios from "axios";
+
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -11,34 +12,27 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
-  const token = localStorage.getItem("token");
-  const axiosConfig = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
 
-  // Fetch logged-in user profile
+
 useEffect(() => {
   const fetchProfile = async () => {
     try {
+      const config = {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      };
+
       const res = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/users/profile`,
-        axiosConfig // ✅ ADD THIS
+        config
       );
 
-      setProfile({
-        name: res.data.name,
-        email: res.data.email,
-        password: "",
-      });
-
-      setLoading(false); // ✅ stop loading
-
+      setProfile({ name: res.data.name, email: res.data.email, password: "" });
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false); // ✅ prevent infinite loading
+      setLoading(false);
     }
   };
-
   fetchProfile();
 }, []);
 
