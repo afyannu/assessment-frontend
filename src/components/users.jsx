@@ -225,7 +225,7 @@
 // export default UsersList;
 
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback ,useMemo} from "react";
 import axios from "axios";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import { hasPermission } from "./superadminboard";
@@ -239,23 +239,25 @@ function UsersList() {
   const usersPerPage = 5;
   const token = localStorage.getItem("token");
 
-  const axiosConfig = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
+
+
+const axiosConfig = useMemo(() => ({
+  headers: { Authorization: `Bearer ${token}` },
+}), [token]);
 
   /* ================= FETCH USERS ================= */
 
-  const fetchUsers = useCallback(async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/users/all`,
-        axiosConfig
-      );
-      setUsers(res.data.data || []);
-    } catch (err) {
-      console.error("Fetch Users Error:", err);
-    }
-  }, [token]);
+const fetchUsers = useCallback(async () => {
+  try {
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/users/all`,
+      axiosConfig
+    );
+    setUsers(res.data.data || []);
+  } catch (err) {
+    console.error("Fetch Users Error:", err);
+  }
+}, [axiosConfig]);
 
   useEffect(() => {
     fetchUsers();
@@ -273,42 +275,42 @@ function UsersList() {
 
   /* ================= UPDATE ================= */
 
-  const handleSave = useCallback(async () => {
-    try {
-      await axios.put(
-        `${process.env.REACT_APP_API_URL}/api/users/${editingUser._id}`,
-        {
-          name: editingUser.name,
-          email: editingUser.email,
-        },
-        axiosConfig
-      );
+const handleSave = useCallback(async () => {
+  try {
+    await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/users/${editingUser._id}`,
+      {
+        name: editingUser.name,
+        email: editingUser.email,
+      },
+      axiosConfig
+    );
 
-      alert("User updated successfully");
-      setEditingUser(null);
+    alert("User updated successfully");
+    setEditingUser(null);
 
-      await fetchUsers();
-    } catch (err) {
-      console.error("Update Error:", err);
-    }
-  }, [editingUser, fetchUsers]);
+    await fetchUsers();
+  } catch (err) {
+    console.error("Update Error:", err);
+  }
+}, [editingUser, fetchUsers, axiosConfig]);
 
   /* ================= DELETE ================= */
 
-  const handleDelete = useCallback(async (id) => {
-    if (!window.confirm("Delete this user?")) return;
+const handleDelete = useCallback(async (id) => {
+  if (!window.confirm("Delete this user?")) return;
 
-    try {
-      await axios.delete(
-        `${process.env.REACT_APP_API_URL}/api/users/${id}`,
-        axiosConfig
-      );
+  try {
+    await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/users/${id}`,
+      axiosConfig
+    );
 
-      await fetchUsers();
-    } catch (err) {
-      console.error("Delete Error:", err);
-    }
-  }, [fetchUsers]);
+    await fetchUsers();
+  } catch (err) {
+    console.error("Delete Error:", err);
+  }
+}, [fetchUsers, axiosConfig]);
 
   /* ================= SEARCH ================= */
 
