@@ -10,11 +10,6 @@ function Products() {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
-const axiosConfig = useMemo(() => ({
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-  },
-}), []);
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -98,18 +93,7 @@ const handleSubmit = async () => {
 
   /* ================= DELETE ================= */
 
-const handleDelete = async (id) => {
-  try {
-    await axios.delete(
-      `${process.env.REACT_APP_API_URL}/api/products/${id}`
-    );
 
-    // refresh
-    window.location.reload();
-  } catch (err) {
-    console.log(err);
-  }
-};
 
   /* ================= EDIT ================= */
 
