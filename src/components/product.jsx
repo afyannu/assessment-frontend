@@ -22,15 +22,18 @@ function Products() {
 
   /* ================= FETCH ================= */
 
+ useEffect(() => {
   const fetchCategories = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/categories`);
-    setCategories(res.data);
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/categories`
+      );
+      setCategories(res.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  useEffect(() => {
-    fetchProducts();
-    fetchCategories();
-  }, [categoryId,fetchProducts,fetchCategories]);
   const fetchProducts = async () => {
     try {
       let url = `${process.env.REACT_APP_API_URL}/api/products`;
@@ -45,45 +48,63 @@ function Products() {
       console.log(err);
     }
   };
+
+  fetchProducts();
+  fetchCategories();
+}, [categoryId]);
   /* ================= ADD / UPDATE ================= */
 
-  const handleSubmit = async () => {
-    try {
-      const data = new FormData();
+const handleSubmit = async () => {
+  try {
+    const data = new FormData();
 
-      data.append("name", formData.name);
-      data.append("price", formData.price);
-      data.append("description", formData.description);
-      data.append("category", formData.category);
-      data.append("status", formData.status);
-      data.append("stock",formData.stock);
+    data.append("name", formData.name);
+    data.append("price", formData.price);
+    data.append("description", formData.description);
+    data.append("category", formData.category);
+    data.append("status", formData.status);
+    data.append("stock", formData.stock);
 
-      if (formData.image) {
-        data.append("image", formData.image);
-      }
-
-      if (editingProduct) {
-        await axios.put(
-          `${process.env.REACT_APP_API_URL}/api/products/${editingProduct._id}`,
-          data,
-        );
-      } else {
-        await axios.post(`${process.env.REACT_APP_API_URL}/api/products`, data);
-      }
-
-      resetForm();
-      fetchProducts();
-    } catch (error) {
-      console.error(error);
+    if (formData.image) {
+      data.append("image", formData.image);
     }
-  };
+
+    if (editingProduct) {
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/products/${editingProduct._id}`,
+        data
+      );
+    } else {
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/products`,
+        data
+      );
+    }
+
+    resetForm();
+
+    // 🔥 Refresh data
+    window.location.reload();
+
+  } catch (error) {
+    console.error("Submit Error:", error);
+  }
+};
 
   /* ================= DELETE ================= */
 
-  const handleDelete = async (id) => {
-    await axios.delete(`${process.env.REACT_APP_API_URL}/api/products/${id}`);
-    fetchProducts();
-  };
+const handleDelete = async (id) => {
+  try {
+    await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/products/${id}`
+    );
+
+    // refresh
+    window.location.reload();
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   /* ================= EDIT ================= */
 
